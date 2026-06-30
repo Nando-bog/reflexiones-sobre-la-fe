@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es-co">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Temas · Reflexiones sobre la Fe</title>
+<meta name="description" content="Archivo de las reflexiones radiales de Fernando Díaz del Castillo Z. sobre la fe y la Doctrina Social de la Iglesia, emitidas en Radio María de Colombia (1220 AM) entre 2006 y 2022.">
+<link rel="canonical" href="https://nando-bog.github.io/reflexiones-sobre-la-fe/temas/">
+<meta name="author" content="Fernando Díaz del Castillo Z.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:site_name" content="Reflexiones sobre la Fe de Fernando Díaz del Castillo Z.">
+<meta property="og:title" content="Temas">
+<meta property="og:description" content="Archivo de las reflexiones radiales de Fernando Díaz del Castillo Z. sobre la fe y la Doctrina Social de la Iglesia, emitidas en Radio María de Colombia (1220 AM) entre 2006 y 2022.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nando-bog.github.io/reflexiones-sobre-la-fe/temas/">
+<meta property="og:locale" content="es_CO">
+<meta property="og:image" content="https://nando-bog.github.io/reflexiones-sobre-la-fe/img/fotos/radio.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nando-bog.github.io/reflexiones-sobre-la-fe/img/fotos/radio.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://nando-bog.github.io/reflexiones-sobre-la-fe/css/site.css">
+</head>
+<body>
+<header class="site">
+  <div class="rule"></div>
+  <div class="bar">
+    <div class="brand"><a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/" style="color:inherit;text-decoration:none"><b>Reflexiones sobre la Fe de Fernando Díaz del Castillo Z.</b></a>
+      <small>Emitidas en <a href="https://www.radiomariacol.org/" target="_blank" rel="noopener">Radio María de Colombia</a> · Bogotá 1220 AM</small></div>
+    <nav class="menu">
+      <a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/" >Inicio</a>
+      <a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/dsi/" >Doctrina Social</a>
+      <a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/vlpc/" >Vale la pena creer</a>
+      <a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/biografia/">Biografía</a>
+      <a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/libros/">Libros</a>
+      <a href="https://nando-bog.github.io/reflexiones-sobre-la-fe/buscar/">Buscar</a>
+      <a class="live" href="https://www.radiomariacol.org/" target="_blank" rel="noopener"><span class="dot"></span>Radio María en vivo</a>
+    </nav>
+  </div>
+</header>
+<main>
+<div class="progview" data-prog="temas"><div class="wrap">
+  <a class="backlink" href="https://nando-bog.github.io/reflexiones-sobre-la-fe/">← Inicio</a>
+  <div class="progbanner"><div class="pcap"><div class="kicker"></div><h1></h1></div><figure class="pimg"><img src="https://nando-bog.github.io/reflexiones-sobre-la-fe/img/programas/temas.jpg" alt="" loading="lazy"><figcaption></figcaption></figure></div>
+  <div class="controls">
+    <input type="search" id="q" placeholder="Buscar por título, tema o palabra del guion…" oninput="onSearch()">
+    <select id="tema" onchange="flt()"><option value="">Todos los temas</option></select>
+    <select id="ord" onchange="flt()">
+      <option value="fecha-asc">Más antiguo primero</option>
+      <option value="fecha-desc">Más reciente primero</option>
+      <option value="num">Por número de episodio</option>
+      <option value="titulo">Por título (A–Z)</option>
+    </select>
+    <span class="seg"><button id="bc" class="on" type="button" onclick="setv('cards')">Tarjetas</button><button id="bt" type="button" onclick="setv('tabla')">Tabla</button></span>
+  </div>
+  <p class="count" id="count"></p>
+  <div id="list" class="elist">
+    
+  </div>
+  <div id="tabla" style="display:none"></div>
+</div></div>
+<script>
+const M=["","ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+function fdate(d){return d?(+d.slice(8,10))+" "+M[+d.slice(5,7)]+" "+d.slice(0,4):""}
+document.querySelectorAll('.date[data-d]').forEach(s=>s.textContent=fdate(s.dataset.d));
+let layout='cards';
+const list=document.getElementById('list'), all=[...list.children];
+const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');
+all.forEach(e=>e._bn=norm(e.dataset.busca));
+
+
+
+const PROG=(document.querySelector('.progview')||{dataset:{}}).dataset.prog||'';
+const PF_URL="\"https://nando-bog.github.io/reflexiones-sobre-la-fe/pagefind/pagefind.js\"";
+let pfNums=null, pfMod=null, pfTried=false, pfTimer=null, curQ='';
+async function getPF(){ if(pfTried) return pfMod; pfTried=true; try{ pfMod=await import(PF_URL); }catch(e){ pfMod=null; } return pfMod; }
+function onSearch(){
+  curQ=document.getElementById('q').value.trim();
+  pfNums=null; flt();                 
+  clearTimeout(pfTimer);
+  if(!curQ) return;
+  const qAt=curQ;
+  pfTimer=setTimeout(async()=>{
+    const lib=await getPF(); if(!lib) return;
+    let s; try{ s=await lib.search(qAt,{filters:{programa:PROG}}); }catch(e){ return; }
+    if(curQ!==qAt) return;
+    const datas=await Promise.all(s.results.map(r=>r.data()));
+    if(curQ!==qAt) return;
+    const nums=new Set();
+    for(const d of datas){ const m=(d.url||'').match(/\/0*(\d+)\/?$/); if(m) nums.add(+m[1]); }
+    pfNums=nums; flt();                
+  },180);
+}
+
+function flt(){
+  const q=norm(document.getElementById('q').value.trim());
+  const tm=document.getElementById('tema').value, ord=document.getElementById('ord').value;
+  let vis=all.filter(e=>(!tm||e.dataset.tema===tm)&&(!q||(pfNums?pfNums.has(+e.dataset.num):e._bn.includes(q))));
+  vis.sort((a,b)=>ord==='fecha-asc'?a.dataset.fecha.localeCompare(b.dataset.fecha):
+    ord==='num'?(+a.dataset.num)-(+b.dataset.num):
+    ord==='titulo'?a.dataset.titulo.localeCompare(b.dataset.titulo):
+    b.dataset.fecha.localeCompare(a.dataset.fecha));
+  all.forEach(e=>e.style.display='none'); vis.forEach(e=>{e.style.display='';list.appendChild(e)});
+  document.getElementById('count').textContent=vis.length+' episodios';
+  if(layout==='tabla') rendertab(vis);
+}
+function rendertab(vis){
+  const t=document.getElementById('tabla');
+  t.innerHTML='<table class="etab"><thead><tr><th>#</th><th>Fecha</th><th>Título</th><th>Tema</th><th>Medios</th></tr></thead><tbody>'+
+   vis.map(e=>{const h=e.querySelector('h3').textContent;const med=(e.querySelector('.pill.audio')?'audio ':'')+(e.querySelector('.pill.text')?'·':'');
+     return `<tr onclick="location.href='${e.getAttribute('href')}'"><td>${e.dataset.num}</td><td>${fdate(e.dataset.fecha)}</td><td>${h}</td><td>${e.dataset.tema}</td><td>${med}</td></tr>`}).join('')+'</tbody></table>';
+}
+function setv(v){layout=v;document.getElementById('bc').classList.toggle('on',v==='cards');document.getElementById('bt').classList.toggle('on',v==='tabla');
+  document.getElementById('list').style.display=v==='cards'?'':'none';document.getElementById('tabla').style.display=v==='tabla'?'':'none';flt()}
+flt();
+</script>
+</main>
+<footer><div class="wrap">
+  <span>In memoriam Fernando Díaz del Castillo Z. (1932–2024)</span>
+  <span>Radio María de Colombia · 1220 AM · <a href="https://www.radiomariacol.org/" target="_blank" rel="noopener">radiomariacol.org</a></span>
+</div></footer>
+</body>
+</html>
